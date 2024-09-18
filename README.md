@@ -111,6 +111,15 @@ urlpatterns = [
     path('json/<str:id>/', show_json_by_id, name='show_json_by_id'),
 ]
 ```
+## Screenshot dari hasil akses URL pada Postman
+JSON
+![image](https://github.com/user-attachments/assets/37e08ff1-7231-48e6-a3eb-c04d111e97e6)
+XML
+![image](https://github.com/user-attachments/assets/2bd0097f-c0dd-46dc-a2dd-635c87ada93d)
+JSON by ID
+![image](https://github.com/user-attachments/assets/e0ea5eeb-f6dd-45d6-8c5a-eaef39cead58)
+XML by ID
+![image](https://github.com/user-attachments/assets/26a8a394-dd9e-4751-9429-e1dc9f4355b3)
 
 ## Tugas 2
 ### Step-by-step Implementasi Checklist
