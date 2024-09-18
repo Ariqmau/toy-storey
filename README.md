@@ -1,6 +1,118 @@
 # Toy Storey
-## Tugas 2
 PWS Link http://ariq-maulana-toystorey.pbp.cs.ui.ac.id/
+## Tugas 3
+### Pertanyaan-pertanyaan:
+#### Jelaskan mengapa kita memerlukan data delivery dalam pengimplementasian sebuah platform?
+Data delivery adalah elemen fundamental dalam pengimplementasian platform karena memastikan bahwa data dikirim dengan cepat, akurat, dan aman. Data delivery memastikan bahwa informasi dapat dikirimkan dari atau ke server, klien, maupun antar aplikasi. Tanpa adanya sistem data delivery, sebuah platform tidak dapat berfungsi secara optimal, karena pertukaran data yang diperlukan untuk berbagai tugas tidak dapat dilakukan dengan benar.
+#### Menurutmu, mana yang lebih baik antara XML dan JSON? Mengapa JSON lebih populer dibandingkan XML?
+JSON lebih populer dibandingkan XML terutama karena kesederhanaan, ringkas, dan integrasi langsung dengan JavaScript, yang membuatnya ideal untuk aplikasi web dan API modern. Meskipun XML masih memiliki kekuatan dalam hal schema dan validasi data yang kompleks, JSON sering kali dipilih karena efisiensi dan kemudahan penggunaannya dalam lingkungan pengembangan modern.
+
+#### Jelaskan fungsi dari method `is_valid()` pada form Django dan mengapa kita membutuhkan method tersebut?
+Metode `is_valid()` pada form Django adalah alat penting untuk memastikan bahwa data yang dikirim oleh pengguna memenuhi aturan validasi yang ditetapkan. Ini membantu dalam menjaga keamanan dan integritas data, meningkatkan pengalaman pengguna, dan mempermudah proses pengolahan data dengan memastikan bahwa hanya data yang valid yang diproses lebih lanjut.
+
+#### Mengapa kita membutuhkan `csrf_token` saat membuat form di Django? Apa yang dapat terjadi jika kita tidak menambahkan `csrf_token` pada form Django? Bagaimana hal tersebut dapat dimanfaatkan oleh penyerang?
+`csrf_token` adalah komponen penting dalam melindungi aplikasi web Django dari serangan Cross-Site Request Forgery (CSRF). Tanpa token ini, aplikasi akan rentan terhadap eksploitasi yang dapat merusak data, melanggar privasi, dan menyebabkan kerusakan keamanan. Penyerang dapat membuat pengguna yang telah login di situs dan mengirimkan permintaan berbahaya, seperti mengubah pengaturan akun, melakukan transfer dana, atau menghapus data, tanpa sepengetahuan pengguna tersebut.
+
+### Step-by-step Implementasi Checklist
+#### Membuat input `form` untuk menambahkan objek model pada app sebelumnya.
+1. Membuat file `forms.py` untuk menambahkan objek model dengan ModelForm
+
+   ```
+   from django.forms import ModelForm
+   from main.models import Product
+
+   class ProductForm(ModelForm):
+       class Meta:
+           model = Product
+           fields = ['name', 'price', 'description', 'stock', 'image']
+   ```
+2. Menambahkan function `create_product_entry` untuk menghasilkan form yang dapat menambahkan data Product Entry secara otomatis ketika data di-submit dari form.
+
+    ```
+    def create_product_entry(request):
+    form = ProductForm(request.POST, request.FILES)
+
+    if form.is_valid() and request.method == "POST":
+        form.save()
+        return redirect('main:show_main')
+
+    context = {'form': form}
+    return render(request, "create_product_entry.html", context)
+    ```
+3. Membuat direktori template pada direktori utama dan menambahkan `base.html` untuk template dasar yang dapat digunakan sebagai kerangka umum untuk halaman web lainnya di dalam proyek.
+   ```
+   {% load static %}
+   <!DOCTYPE html>
+   <html lang="en">
+     <head>
+       <meta charset="UTF-8" />
+       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+       {% block meta %} {% endblock meta %}
+     </head>
+   
+     <body>
+       {% block content %} {% endblock content %}
+     </body>
+   </html>
+   ```
+4. Menambahkan import dan urlpatterns pada `urls.py`
+   ```
+   from main.views import show_main, create_product_entry
+   ...
+   urlpatterns = [
+      path('', show_main, name='show_main'),
+      path('create-product-entry', create_product_entry, name='create_product_entry'),
+      ...
+   ]
+#### Tambahkan 4 fungsi views baru untuk melihat objek yang sudah ditambahkan dalam format XML, JSON, XML by ID, dan JSON by ID.
+Menambahkan fungsi views pada `views.py`
+   Format XML:
+   
+   ```
+   def show_xml(request):
+    data = Product.objects.all()
+    return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
+   ```
+   Format JSON:
+   
+   ```
+   def show_json(request):
+    data = Product.objects.all()
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+   ```
+   Format XML by ID:
+
+   ```
+   def show_xml_by_id(request, id):
+    data = Product.objects.filter(pk=id)
+    return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
+   ```
+   Format JSON by ID;
+
+   ```
+   def show_json_by_id(request, id):
+    data = Product.objects.filter(pk=id)
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+   ```
+#### Membuat routing URL untuk masing-masing views yang telah ditambahkan
+Menambahkan routing URL untuk masing-masing format views XML dan JSON pada `urls.py` dalam direktori `main`.
+```
+from django.urls import path
+from main.views import show_main, create_product_entry, show_xml, show_json, show_xml_by_id, show_json_by_id
+
+app_name = 'main'
+
+urlpatterns = [
+    path('', show_main, name='show_main'),
+    path('create-product-entry', create_product_entry, name='create_product_entry'),
+    path('xml/', show_xml, name='show_xml'),
+    path('json/', show_json, name='show_json'),
+    path('xml/<str:id>/', show_xml_by_id, name='show_xml_by_id'),
+    path('json/<str:id>/', show_json_by_id, name='show_json_by_id'),
+]
+```
+
+## Tugas 2
 ### Step-by-step Implementasi Checklist
 #### Membuat sebuah proyek Django baru
 1. Buat direktori baru bernama `toy-storey`, ini adalah direktori utama
