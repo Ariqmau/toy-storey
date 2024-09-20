@@ -127,3 +127,5 @@ MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost","http://127.0.0.1","http://ariq-maulana-toystorey.pbp.cs.ui.ac.id", "https://ariq-maulana-toystorey.pbp.cs.ui.ac.id"]
+
+# tes
