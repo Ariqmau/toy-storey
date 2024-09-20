@@ -4,15 +4,27 @@
 
 <form method="POST" enctype="multipart/form-data">
   {% csrf_token %}
-  <table>
-    {{ form.as_table }}
-    <tr>
-      <td></td>
-      <td>
-        <input type="submit" value="Add Product Entry" />
-      </td>
-    </tr>
-  </table>
+  <div>
+    <label>{{ form.name.label }}</label>
+    {{ form.name }}
+  </div>
+  <div>
+    <label>{{ form.price.label }}</label>
+    {{ form.price }}
+  </div>
+  <div>
+    <label>{{ form.description.label }}</label>
+    {{ form.description }}
+  </div>
+  <div>
+    <label>{{ form.stock.label }}</label>
+    {{ form.stock }}
+  </div>
+  <div>
+    <label>{{ form.image.label }}</label>
+    {{ form.image }}
+  </div>
+  <input type="submit" value="Add Product Entry" />
 </form>
 
 {% endblock %}
