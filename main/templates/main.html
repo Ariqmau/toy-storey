@@ -57,10 +57,11 @@
     <a href="{% url 'main:create_product_entry' %}">
         <button>Add New Product Entry</button>
     </a>
+    <p>Logged in as {{ username }}</p>
+    <p>Sesi terakhir login: {{ last_login }}</p>
     <a href="{% url 'main:logout' %}">
         <button>Logout</button>
     </a>
-    <p>Sesi terakhir login: {{ last_login }}</p>
     <p>{{ app_name }} by {{ name }} in {{ class }}</p>
 </div>
 {% endblock content %}

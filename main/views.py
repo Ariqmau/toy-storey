@@ -16,7 +16,7 @@ def show_main(request):
     product_entries = Product.objects.filter(user=request.user)
 
     context = {
-        'name': request.user.username,
+        'username': request.user.username,
         'app_name' : 'Toy Storey',
         'name': 'Ariq Maulana Malik Ibrahim',
         'class': 'PBP D',
