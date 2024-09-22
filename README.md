@@ -1,5 +1,24 @@
 # Toy Storey
 PWS Link http://ariq-maulana-toystorey.pbp.cs.ui.ac.id/
+## Tugas 4
+### Pertanyaan-pertanyaan:
+#### Apa perbedaan antara `HttpResponseRedirect()` dan `redirect()`
+
+#### Jelaskan cara kerja penghubungan `model` Product dengan `User`!
+
+#### Apa perbedaan antara authentication dan authorization, apakah yang dilakukan saat pengguna login? Jelaskan bagaimana Django mengimplementasikan kedua konsep tersebut.
+
+#### Bagaimana Django mengingat pengguna yang telah login? Jelaskan kegunaan lain dari cookies dan apakah semua cookies aman digunakan?
+
+### Step-by-step Implementasi Checklist
+#### Mengimplementasikan fungsi registrasi, login, dan logout untuk memungkinkan pengguna untuk mengakses aplikasi sebelumnya dengan lancar.
+
+#### Membuat dua akun pengguna dengan masing-masing tiga dummy data menggunakan model yang telah dibuat pada aplikasi sebelumnya untuk setiap akun di lokal.
+
+#### Menghubungkan model `Product` dengan `User`.
+
+#### Menampilkan detail informasi pengguna yang sedang logged in seperti username dan menerapkan cookies seperti last login pada halaman utama aplikasi.
+
 ## Tugas 3
 ### Pertanyaan-pertanyaan:
 #### Jelaskan mengapa kita memerlukan data delivery dalam pengimplementasian sebuah platform?
