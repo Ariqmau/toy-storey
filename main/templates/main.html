@@ -28,10 +28,6 @@
         padding: 15px;
         text-align: center;
     }
-
-    .center-content {
-        text-align: center;
-    }
 </style>
 
 {% comment %} Berikut cara memperlihatkan data product di bawah baris ini {% endcomment %}
@@ -57,10 +53,14 @@
 
 <br />
 
-<div class="center-content">
+<div style="text-align: center;">
     <a href="{% url 'main:create_product_entry' %}">
         <button>Add New Product Entry</button>
     </a>
+    <a href="{% url 'main:logout' %}">
+        <button>Logout</button>
+    </a>
+    <p>Sesi terakhir login: {{ last_login }}</p>
+    <p>{{ app_name }} by {{ name }} in {{ class }}</p>
 </div>
-<p style="text-align: center;">{{ app_name }} by {{ name }} in {{ class }}</p>
 {% endblock content %}

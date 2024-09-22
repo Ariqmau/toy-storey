@@ -1,29 +1,36 @@
 {% extends 'base.html' %} 
 {% block content %}
-<h1>Add New Product Entry</h1>
+<h1 style="text-align: center;">Add New Product Entry</h1>
 
-<form method="POST" enctype="multipart/form-data">
+<form method="POST" enctype="multipart/form-data", style="text-align: center;">
   {% csrf_token %}
-  <div>
-    <label>{{ form.name.label }}</label>
-    {{ form.name }}
-  </div>
-  <div>
-    <label>{{ form.price.label }}</label>
-    {{ form.price }}
-  </div>
-  <div>
-    <label>{{ form.description.label }}</label>
-    {{ form.description }}
-  </div>
-  <div>
-    <label>{{ form.stock.label }}</label>
-    {{ form.stock }}
-  </div>
-  <div>
-    <label>{{ form.image.label }}</label>
-    {{ form.image }}
-  </div>
+  <table style="margin: 0 auto;">
+    <tr>
+      <td><label>{{ form.name.label }}</label></td>
+      <td>{{ form.name }}</td>
+    </tr>
+    
+    <tr>
+      <td><label>{{ form.price.label }}</label></td>
+      <td>{{ form.price }}</td>
+    </tr>
+
+    <tr>
+      <td><label>{{ form.description.label }}</label></td>
+      <td>{{ form.description }}</td>
+    </tr>
+
+    <tr>
+      <td><label>{{ form.stock.label }}</label></td>
+      <td>{{ form.stock }}</td>
+    </tr>
+
+    <tr>
+      <td><label>{{ form.image.label }}</label></td>
+      <td>{{ form.image }}</td>
+    </tr>
+  </table>
+  <br/>
   <input type="submit" value="Add Product Entry" />
 </form>
 
