@@ -1,7 +1,91 @@
 # Toy Storey
 PWS Link http://ariq-maulana-toystorey.pbp.cs.ui.ac.id/
+## Tugas 5
+#### Jika terdapat beberapa CSS selector untuk suatu elemen HTML, jelaskan urutan prioritas pengambilan CSS selector tersebut!
+Dalam CSS, urutan prioritas atau spesifisitas selector sangat penting untuk menentukan mana yang diterapkan pada elemen HTML ketika ada beberapa aturan yang bisa diterapkan. Dalam hal prioritas dari yang paling diprioritaskan:
+!important > Inline Styles > ID Selector > Class/Attribute/Pseudo-class Selector > Type Selector > Universal Selector.
+#### Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design!
+Responsive design adalah kunci untuk menciptakan aplikasi web yang efektif dan menarik. Dengan semakin banyaknya pengguna yang mengakses internet melalui perangkat mobile, penting bagi pengembang untuk memastikan bahwa aplikasi mereka dapat menyesuaikan diri dengan berbagai ukuran layar dan memberikan pengalaman pengguna yang baik di semua platform. Contoh aplikasi yang suda menerapkan responsive design adalah Amazon dan yang belum adalah situs web pemerintah, terutama yang lebih tua yang belum menerapkan responsive design.
+#### Jelaskan perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut!
+- Margin adalah ruang di luar batas (border) elemen. Margin digunakan untuk mengatur jarak antara elemen satu dengan yang lainnya.
+- Border adalah garis yang mengelilingi elemen. Border digunakan untuk memberikan batas visual pada elemen.
+- Padding adalah ruang di dalam batas (border) elemen, antara konten dan border. Padding digunakan untuk mengatur ruang di dalam elemen.
+
+Cara implementasi:
+- pada file HTML:
+```
+<div class="box">
+    Content goes here.
+</div>
+```
+- pada file css:
+```
+.box {
+    margin: 20px;                /* Jarak antar elemen */
+    border: 2px solid blue;      /* Batas elemen */
+    padding: 15px;               /* Ruang di dalam elemen */
+}
+```
+#### Jelaskan konsep flex box dan grid layout beserta kegunaannya!
+##### Flexbox
+Flexbox adalah model tata letak satu dimensi yang memungkinkan elemen di dalam kontainer fleksibel untuk disusun secara horizontal atau vertikal. Ini dirancang untuk memberikan kontrol yang lebih baik atas penyebaran ruang di antara elemen dan penyesuaian ukuran elemen dalam kontainer. Flexbox ideal untuk tata letak yang sederhana, seperti menu navigasi, tombol, atau form. 
+
+Kegunaan:
+- Penanganan Ruang: Memudahkan untuk mendistribusikan ruang di antara elemen, baik secara horizontal maupun vertikal.
+- Penyesuaian Responsif: Sangat berguna untuk desain responsif, karena elemen dapat dengan mudah menyesuaikan diri saat ukuran layar berubah.
+
+##### Grid Layout
+Grid Layout adalah model tata letak dua dimensi untuk menyusun elemen dalam grid. Ini memberikan kontrol yang lebih besar terhadap penyusunan elemen dalam baris dan kolom. Sangat baik untuk membuat tata letak yang lebih kompleks, seperti halaman dengan beberapa kolom dan baris, misalnya, layout dashboard, kartu, atau galeri gambar.
+
+Kegunaan:
+- Pengaturan Luas dan Tinggi: Memberikan kemampuan untuk mengatur tinggi dan lebar elemen dengan cara yang lebih terstruktur.
+- Pengaturan Responsif: Mudah untuk membuat tata letak responsif dengan menggunakan media queries untuk mengubah ukuran grid berdasarkan ukuran layar.
+### Step-by-step Implementasi Checklist
+#### Implementasikan fungsi untuk menghapus dan mengedit product.
+1. Membuat fungsi `edit_product` dan `delete_product` di dalam `views.py`
+
+```
+def edit_product(request, id):
+    product = Product.objects.get(pk = id)
+    form = ProductForm(request.POST or None, request.FILES or None, instance=product)
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        return redirect(reverse('main:show_main'))
+
+    context = {'form': form}
+    return render(request, "edit_product.html", context)
+
+def delete_product(request, id):
+    product = Product.objects.get(pk = id)
+    product.delete()
+    return HttpResponseRedirect(reverse('main:show_main'))
+```
+2. add import dan routing url di dalam `main/urls.py`
+
+```
+from main.views import ... edit_product, delete_product
+...
+urlpatterns = [
+   ...
+    path('edit-product/<uuid:id>', edit_product, name='edit_product'),
+    path('delete/<uuid:id>', delete_product, name='delete_product'),
+]
+```
+#### Kustomisasi halaman login, register, tambah product, halaman daftar product, navigation bar menjadi menarik dan responsive.
+1. Menginisiasi pemanggilan Tailwind melalui CDN (Content Distribution Network) dengan meletakkan CDN di `base.html`.
+
+```
+<head>
+  ...
+  <script src="https://cdn.tailwindcss.com"></script>
+  ...
+</head>
+```
+2. Kustomasi menggunakan TailwindCSS
+Mencoba-coba style-style yang bagus untuk diterapkan pad alemen-elemen HTML.
+
 ## Tugas 4
-### Pertanyaan-pertanyaan:
 #### Apa perbedaan antara `HttpResponseRedirect()` dan `redirect()`?
    - `HttpResponseRedirect()` adalah kelas yang secara langsung membuat respons HTTP dengan status 302 (Found). Kita harus harus menyebutkan URL secara eksplisit ketika membuat objek ini.
    - `redirect()` adalah fungsi pembungkus yang membuat kode lebih mudah dibaca dan lebih fleksibel. Kita dapat menggunakan URL sebagai string, nama view, atau objek model
@@ -250,7 +334,6 @@ def show_main(request):
 ...
 ```
 ## Tugas 3
-### Pertanyaan-pertanyaan:
 #### Jelaskan mengapa kita memerlukan data delivery dalam pengimplementasian sebuah platform?
 Data delivery adalah elemen fundamental dalam pengimplementasian platform karena memastikan bahwa data dikirim dengan cepat, akurat, dan aman. Data delivery memastikan bahwa informasi dapat dikirimkan dari atau ke server, klien, maupun antar aplikasi. Tanpa adanya sistem data delivery, sebuah platform tidak dapat berfungsi secara optimal, karena pertukaran data yang diperlukan untuk berbagai tugas tidak dapat dilakukan dengan benar.
 #### Menurutmu, mana yang lebih baik antara XML dan JSON? Mengapa JSON lebih populer dibandingkan XML?

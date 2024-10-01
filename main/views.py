@@ -1,7 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from main.forms import ProductForm
 from main.models import Product
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.core import serializers
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -19,6 +19,7 @@ def show_main(request):
         'username': request.user.username,
         'app_name' : 'Toy Storey',
         'name': 'Ariq Maulana Malik Ibrahim',
+        'npm': '2306211622',
         'class': 'PBP D',
         'product_entries': product_entries,
         'last_login': request.COOKIES['last_login'],
@@ -27,13 +28,15 @@ def show_main(request):
     return render(request, "main.html", context)
 
 def create_product_entry(request):
-    form = ProductForm(request.POST, request.FILES)
-
-    if form.is_valid() and request.method == "POST":
-        mood_entry = form.save(commit=False)
-        mood_entry.user = request.user
-        mood_entry.save()
-        return redirect('main:show_main')
+    if request.method == "POST":
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            product_entry = form.save(commit=False)
+            product_entry.user = request.user
+            product_entry.save()
+            return redirect('main:show_main')
+    else:
+        form = ProductForm()
 
     context = {'form': form}
     return render(request, "create_product_entry.html", context)
@@ -87,3 +90,19 @@ def logout_user(request):
     response = HttpResponseRedirect(reverse('main:login'))
     response.delete_cookie('last_login')
     return response
+
+def edit_product(request, id):
+    product = Product.objects.get(pk = id)
+    form = ProductForm(request.POST or None, request.FILES or None, instance=product)
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        return redirect(reverse('main:show_main'))
+
+    context = {'form': form}
+    return render(request, "edit_product.html", context)
+
+def delete_product(request, id):
+    product = Product.objects.get(pk = id)
+    product.delete()
+    return HttpResponseRedirect(reverse('main:show_main'))

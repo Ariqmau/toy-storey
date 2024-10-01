@@ -1,67 +1,48 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Toy Storey</title>
+{% endblock meta %}
 {% block content %}
-<h1 style="text-align: center;">{{ app_name }}</h1>
-
-{% if not product_entries %}
-<p style="text-align: center;">Belum ada data product pada Toy Storey.</p>
-{% else %}
-
-<style>
-    .product-card {
-        background: linear-gradient(to right, #00ddffaf, #0acaffb7);
-        border-radius: 15px;
-        overflow: hidden;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: box-shadow 0.3s ease;
-    }
-
-    .product-card:hover {
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-    }
-
-    .product-card img {
-        width: 100%;
-        height: auto;
-    }
-
-    .product-card .details {
-        padding: 15px;
-        text-align: center;
-    }
-</style>
-
-{% comment %} Berikut cara memperlihatkan data product di bawah baris ini {% endcomment %}
-{% for product_entry in product_entries %}
-<a href="json/{{ product_entry.id }}" style="color: black; text-decoration: none;">
-    <div class="product-card">
-        <div class="details">
-            <h1>{{ product_entry.name }}</h1>
-            <img src="{{ product_entry.image.url }}" alt="{{ product_entry.name }}" style="max-width: 300px; height: auto;">
-            <div>
-                <p>Rp {{ product_entry.price }}</p>
-                <p>Description: {{ product_entry.description }}</p>
-                <p>Stock: {{ product_entry.stock }}</p>
-            </div>
-        </div>
+{% include 'navbar.html' %}
+<div class="overflow-x-hidden px-4 md:px-8 pb-8 pt-24 min-h-screen flex flex-col">
+  <div class="p-2 mb-6 relative">
+    <div class="relative grid grid-cols-1 z-30 md:grid-cols-3 gap-8">
+      {% include "card_info.html" with title='NPM' value=npm %}
+      {% include "card_info.html" with title='Name' value=name %}
+      {% include "card_info.html" with title='Class' value=class %}
     </div>
-</a>
-
-<br />
-{% endfor %}
-
-{% endif %}
-
-<br />
-
-<div style="text-align: center;">
-    <a href="{% url 'main:create_product_entry' %}">
-        <button>Add New Product Entry</button>
+  </div>
+  
+  {% if not product_entries %}
+  <div class="flex flex-col items-center justify-center min-h-[24rem] p-6">
+    <img src="{% static 'image/Cartoon_cardboard_open_box.png' %}" alt="Empty Box" class="w-50 h-32 mb-4" />
+    <p class="text-center text-gray-600 mt-4">There is no product at Toy Storey yet</p>
+    <br/>
+    <a href="{% url 'main:create_product_entry' %}"
+      class="bg-blue-500 bg-opacity-90 shadow-lg hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 mx-auto block">
+      Add New Product Entry
     </a>
-    <p>Logged in as {{ username }}</p>
-    <p>Sesi terakhir login: {{ last_login }}</p>
-    <a href="{% url 'main:logout' %}">
-        <button>Logout</button>
+  </div>
+  {% else %}
+  <div class="flex justify-end mb-6">
+    <a href="{% url 'main:create_product_entry' %}"
+      class="bg-blue-500 bg-opacity-90 shadow-lg hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105">
+      Add New Product Entry
     </a>
-    <p>{{ app_name }} by {{ name }} in {{ class }}</p>
+  </div>
+  <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6 w-full">
+    {% for product_entry in product_entries %}
+    {% include 'card_product.html' with product_entry=product_entry %}
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="px-3 mb-4 mt-10">
+    <div class="flex rounded-md items-center bg-blue-500 bg-opacity-90 shadow-lg py-2 px-4 w-fit">
+      <h1 class="text-white text-center">Last Login: {{last_login}}</h1>
+    </div>
+  </div>
 </div>
 {% endblock content %}
