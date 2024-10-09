@@ -1,0 +1,16 @@
+@keyframes shine {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+.animate-shine {
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.3));
+    background-size: 200% 100%;
+    animation: shine 3s infinite;
+}
+
+.toy-storey-title {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 4rem;
+    color: #FFCC00;
+    text-shadow: 2px 2px 0 #FF0000, 2px 2px 5px rgba(0, 0, 0, 0.5);
+}

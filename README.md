@@ -1,5 +1,219 @@
 # Toy Storey
 PWS Link http://ariq-maulana-toystorey.pbp.cs.ui.ac.id/
+## Tugas 6
+#### Jelaskan manfaat dari penggunaan JavaScript dalam pengembangan aplikasi web!
+JavaScript memiliki peran yang sangat penting dalam pengembangan aplikasi web karena memungkinkan terciptanya halaman web yang interaktif, responsif, dan dinamis. Dengan JavaScript, pengembang dapat membuat elemen web yang berinteraksi langsung dengan pengguna tanpa harus memuat ulang seluruh halaman, seperti validasi form, animasi, atau pengambilan data secara asinkron menggunakan AJAX. Selain itu, JavaScript juga memungkinkan pemrosesan data di sisi klien, yang meningkatkan kecepatan aplikasi dan mengurangi beban server. Framework dan library populer seperti React, Angular, dan Node.js memperluas fungsionalitas JavaScript, memungkinkan pengembangan aplikasi lintas platform, termasuk web, mobile, dan desktop.
+
+#### Jelaskan fungsi dari penggunaan `await` ketika kita menggunakan `fetch()`! Apa yang akan terjadi jika kita tidak menggunakan `await`?
+Fungsi dari penggunaan await ketika menggunakan fetch() adalah untuk menunggu hasil dari operasi asinkron sebelum melanjutkan ke baris kode berikutnya. fetch() adalah fungsi yang mengembalikan sebuah promise yang mewakili operasi pengambilan data dari suatu API. Dengan menggunakan await, JavaScript akan "menjeda" eksekusi kode hingga promise tersebut selesai (resolved) dan mengembalikan hasil (misalnya respons HTTP). Jika kita tidak menggunakan await, maka JavaScript tidak akan menunggu hasil dari operasi asinkron tersebut. Sebaliknya, kode akan langsung melanjutkan ke baris berikutnya, meskipun fetch() belum selesai mengambil data.
+
+#### Mengapa kita perlu menggunakan decorator `csrf_exempt` pada view yang akan digunakan untuk AJAX `POST`?
+Ketika menggunakan AJAX dengan metode POST, permintaan ini sering kali tidak menyertakan token CSRF secara otomatis, yang dapat menyebabkan kegagalan validasi CSRF di Django. Untuk mengatasi masalah ini, decorator @csrf_exempt dapat digunakan untuk menonaktifkan perlindungan CSRF pada view tertentu. Hal ini biasanya diterapkan ketika AJAX POST berasal dari klien yang tidak menyertakan token CSRF, seperti aplikasi eksternal atau API.
+
+#### Pada tutorial PBP minggu ini, pembersihan data input pengguna dilakukan di belakang (backend) juga. Mengapa hal tersebut tidak dilakukan di frontend saja?
+Beberapa alasan penting:
+- Integritas Data
+Backend bertanggung jawab untuk memastikan bahwa semua data yang diterima benar, aman, dan sesuai dengan aturan yang diharapkan oleh sistem. Bahkan jika frontend berfungsi dengan benar, sangat penting bagi backend untuk memverifikasi kembali data yang dikirimkan, karena backend adalah lapisan terakhir yang melindungi integritas aplikasi dan database.
+- Konsistensi
+Jika pembersihan dan validasi hanya dilakukan di frontend, setiap kali ada perubahan pada aturan validasi, pengembang harus memperbarui semua tempat di frontend di mana aturan ini diterapkan. Ini bisa mengakibatkan ketidakkonsistenan jika beberapa bagian frontend tidak diperbarui dengan benar. Sebaliknya, melakukan validasi di backend memastikan bahwa aturan tersebut selalu diterapkan dengan konsisten di semua tempat, baik di UI internal, API eksternal, maupun permintaan lain.
+
+### Step-by-step Implementasi Checklist
+#### Ubahlah kode cards data mood agar dapat mendukung AJAX GET
+Mengubah dan menambahkan kode dari card_product.html agar dapat mendukung AJAX GET dengan memasukkan kode html pada fungsi `refreshProductEntries()` di script `main.html`
+
+```
+async function refreshProductEntries() {
+    document.getElementById("product_entry_cards").innerHTML = "";
+    document.getElementById("product_entry_cards").className = "";
+    const productEntries = await getProductEntries();
+    let htmlString = "";
+    let classNameString = "";
+
+    if (productEntries.length === 0) {
+      classNameString = "flex flex-col items-center justify-center min-h-[24rem] p-6";
+      htmlString = `
+            <div class="flex flex-col items-center justify-center min-h-[24rem] p-6">
+              <img src="{% static 'image/Cartoon_cardboard_open_box.png' %}" alt="Empty Box" class="w-50 h-32 mb-4" />
+              <p class="text-center text-gray-600 mt-4">There is no product at Toy Storey yet</p>
+              <br/>
+              <a href="{% url 'main:create_product_entry' %}"
+                class="bg-blue-500 bg-opacity-90 shadow-lg hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 mx-auto block">
+                Add New Product Entry
+              </a>
+            </div>
+        `;
+    }
+    else {
+      classNameString = "columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6 w-full"
+      productEntries.forEach((item) => {
+        const name = DOMPurify.sanitize(item.fields.name);
+        const description = DOMPurify.sanitize(item.fields.description);
+        htmlString += `
+          <div class="relative break-inside-avoid">
+            <div class="relative top-5 bg-indigo-200 shadow-lg hover:shadow-xl rounded-lg mb-6 break-inside-avoid flex flex-col border-2 border-indigo-300 hover:scale-105 transition-transform duration-300 ease-in-out hover:border-purple-400">
+              <div class="bg-blue-500 bg-opacity-60 text-gray-800 p-4 rounded-t-lg border-b-2 border-indigo-300">
+                <h3 class="text-center font-bold text-xl mb-2">${name}</h3>
+                <div class="mx-auto w-full">
+                  <img src="media/${item.fields.image}" alt="${name}" class="mx-auto w-full h-auto max-w-xs max-h-64 object-contain">
+                </div>
+                <p class="text-center text-gray-600">Price: Rp${item.fields.price}</p>
+              </div>
+              <div class="p-4">
+                <p class="font-semibold text-lg mb-2">Description</p>
+                <p class="text-gray-700 mb-2">
+                  <span class="bg-[linear-gradient(to_bottom,transparent_0%,transparent_calc(100%_-_1px),#CDC1FF_calc(100%_-_1px))] bg-[length:100%_1.5rem] pb-1">${description}</span>
+                </p>
+                <div class="mt-4">
+                  <p class="text-gray-700 font-semibold mb-2">Stock: ${item.fields.stock}</p>
+                </div>
+              </div>
+            </div>
+            <div class="absolute top-0 -right-4 flex space-x-1">
+              <a href="/edit-product/${item.pk}" class="bg-yellow-500 hover:bg-yellow-600 text-white rounded-full p-2 transition duration-300 shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-9 w-9" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                </svg>
+              </a>
+              <a href="/delete/${item.pk}" class="bg-red-500 hover:bg-red-600 text-white rounded-full p-2 transition duration-300 shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-9 w-9" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+              </a>
+            </div>
+          </div>
+          `;
+      });
+    }
+    document.getElementById("product_entry_cards").className = classNameString;
+    document.getElementById("product_entry_cards").innerHTML = htmlString;
+  }
+```
+#### Lakukan pengambilan data product menggunakan AJAX GET. Pastikan bahwa data yang diambil hanyalah data milik pengguna yang logged-in.
+Menambahkan fungsi `add_product_entry_ajax` pada `views.py` untuk mengambil data menggunakan AJAX. `user=user` pada `new_product` memastikan bahwa data yang diambil hanyalah data milik pengguna yang logged-in.
+
+```
+@csrf_exempt
+@require_POST
+def add_product_entry_ajax(request):
+    name = strip_tags(request.POST.get("name"))
+    price = request.POST.get("price")
+    description = strip_tags(request.POST.get("description"))
+    stock = request.POST.get("stock")
+    image = request.FILES.get("image")
+    user = request.user
+
+    new_product = Product(
+        name=name, price=price,
+        description=description,
+        stock=stock, image=image,
+        user=user
+    )
+    new_product.save()
+
+    return HttpResponse(b"CREATED", status=201)
+```
+#### Buatlah sebuah tombol yang membuka sebuah modal dengan form untuk menambahkan product.
+1. Menambahkan button pada main.html yang jika di click menjalankan fungsi `showModal();`
+
+```
+<button data-modal-target="crudModal" data-modal-toggle="crudModal" 
+   class="bg-blue-500 bg-opacity-90 shadow-lg hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 mx-3"
+   onclick="showModal();">
+   Add New Product Entry by AJAX
+</button>
+```
+
+2. Menambahkan fungsi `showModal` dan `hideModal` dan menghandle event click dengan menjalankan fungsi-fungsi tersebut.
+
+```
+   function showModal() {
+      const modal = document.getElementById('crudModal');
+      const modalContent = document.getElementById('crudModalContent');
+
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+         modalContent.classList.remove('opacity-0', 'scale-95');
+         modalContent.classList.add('opacity-100', 'scale-100');
+      }, 50);
+   }
+
+  function hideModal() {
+    const modal = document.getElementById('crudModal');
+    const modalContent = document.getElementById('crudModalContent');
+
+    modalContent.classList.remove('opacity-100', 'scale-100');
+    modalContent.classList.add('opacity-0', 'scale-95');
+
+    setTimeout(() => {
+      modal.classList.add('hidden');
+    }, 150);
+  }
+
+  document.getElementById("cancelButton").addEventListener("click", hideModal);
+  document.getElementById("closeModalBtn").addEventListener("click", hideModal);
+```
+
+#### Buatlah fungsi view baru untuk menambahkan product baru ke dalam basis data.
+Menambahkan fungsi view baru:
+
+```
+@csrf_exempt
+@require_POST
+def add_product_entry_ajax(request):
+    name = strip_tags(request.POST.get("name"))
+    price = request.POST.get("price")
+    description = strip_tags(request.POST.get("description"))
+    stock = request.POST.get("stock")
+    image = request.FILES.get("image")
+    user = request.user
+
+    new_product = Product(
+        name=name, price=price,
+        description=description,
+        stock=stock, image=image,
+        user=user
+    )
+    new_product.save()
+
+    return HttpResponse(b"CREATED", status=201)
+```
+
+#### Buatlah path /create-ajax/ yang mengarah ke fungsi view yang baru kamu buat.
+Menambahkan path di dalam `main/urls.py` pada `urlpatterns`
+
+```
+urlpatterns = [
+    ...
+    path('create-product-entry-ajax', add_product_entry_ajax, name='add_product_entry_ajax'),
+]
+```
+
+#### Hubungkan form yang telah kamu buat di dalam modal kamu ke path /create-ajax/.
+Form terhubung dengan path /create-ajax/ melalui fungsi `fetch()` pada `addProductEntry()` 
+
+```
+function addProductEntry() {
+    fetch("{% url 'main:add_product_entry_ajax' %}", {
+      method: "POST",
+      body: new FormData(document.querySelector('#productEntryForm')),
+    })
+      .then(response => refreshProductEntries())
+
+    document.getElementById("productEntryForm").reset();
+    document.querySelector("[data-modal-toggle='crudModal']").click();
+
+    return false;
+  }
+```
+
+#### Lakukan refresh pada halaman utama secara asinkronus untuk menampilkan daftar mood terbaru tanpa reload halaman utama secara keseluruhan.
+Refresh dilakukan dengan menjalankan fungsi `refreshProductEntries()`
+
+```
+...
+refreshProductEntries();
+...
+```
 ## Tugas 5
 #### Jika terdapat beberapa CSS selector untuk suatu elemen HTML, jelaskan urutan prioritas pengambilan CSS selector tersebut!
 Dalam CSS, urutan prioritas atau spesifisitas selector sangat penting untuk menentukan mana yang diterapkan pada elemen HTML ketika ada beberapa aturan yang bisa diterapkan. Dalam hal prioritas dari yang paling diprioritaskan:
